@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jigsaw</title>
+</head>
+<body>
+    <canvas id="jigsawCanvas" width="400" height="400" style="border: 1px solid black;"></canvas>
+
+    <script>
+      // Get the canvas and its 2D context
+      const canvas = document.getElementById('jigsawCanvas');
+      const ctx = canvas.getContext('2d');
+  
+      // Set the style for the jigsaw piece
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = 'black';
+      ctx.fillStyle = 'lightblue';
+
+      const drawConnectingPiece = (ctx, startX,startY,direction,size=1) => {
+        //ctx.beginPath();
+        ctx.moveTo(startX, startY);
+        if(direction === 'R') {
+          ctx.lineTo(startX+(size*25),startY);
+          // Start angle (in radians)
+          const startAngle = Math.PI;
+          // End angle (in radians)
+          const endAngle = 0; // 180 degrees in radians
+          ctx.arc(startX+(size*50),startY,size*25,startAngle,endAngle);
+          ctx.lineTo(startX+(size*75),startY+(size*20));
+          ctx.arc(startX+(size*50),startY+(size*20),size*25,endAngle,startAngle);
+          ctx.lineTo(startX,startY+(size*20));
+        }
+
+        if(direction === 'L') {
+          ctx.lineTo(startX-(size*25),startY);
+          // Start angle (in radians)
+          const startAngle = 0;
+          // End angle (in radians)
+          const endAngle = Math.PI; // 180 degrees in radians
+          ctx.arc(startX-(size*50),startY,size*25,startAngle,endAngle);
+          ctx.lineTo(startX-(size*75),startY-(size*20));
+          ctx.arc(startX-(size*50),startY-(size*20),size*25,endAngle,startAngle);
+          ctx.lineTo(startX,startY-(size*20));
+        }
+
+        if(direction === 'D') {
+          ctx.lineTo(startX,startY+(size*25));
+          // Start angle (in radians)
+          const startAngle = 270 * (Math.PI / 180);
+          // End angle (in radians)
+          const endAngle = 90 * (Math.PI / 180);
+          ctx.arc(startX,startY+(size*50),size*25,startAngle,endAngle);
+          ctx.lineTo(startX-(size*20),startY+(size*75));
+          ctx.arc(startX-(size*20),startY+(size*50),size*25,endAngle,startAngle);
+          ctx.lineTo(startX-(size*20),startY);
+        }
+
+        if(direction === 'U') {
+          ctx.lineTo(startX,startY-(size*25));
+          // Start angle (in radians)
+          const startAngle = 90 * (Math.PI / 180);
+          // // End angle (in radians)
+          const endAngle = 270 * (Math.PI / 180);
+          ctx.arc(startX,startY-(size*50),size*25,startAngle,endAngle);
+          ctx.lineTo(startX+(size*20),startY-(size*75));
+          ctx.arc(startX+(size*20),startY-(size*50),size*25,endAngle,startAngle);
+          ctx.lineTo(startX+(size*20),startY);
+        }
+        //ctx.fill();
+        //ctx.stroke();
+      } 
+  
+      // Define the points for the jigsaw piece (triangle)
+      const points = [
+        { x: 0, y: 0 },
+        { x: 100, y: 0 },
+        //The curve
+        { x: 90, y: 20 },
+        { x: 90, y: 30 },
+        { x: 100, y: 50 },
+        //The connecting piece
+        { x: 110, y: 50 },
+        { x: 112.5, y: 45 },
+        { x: 115, y: 45 },
+        { x: 120, y: 50 },
+        { x: 120, y: 50 },
+        { x: 115, y: 55 },
+        { x: 110, y: 50 },
+      ];
+  
+      // Function to draw the jigsaw piece
+      function drawJigsawPiece() {
+        ctx.beginPath();
+        ctx.moveTo(points[0].x, points[0].y);
+        ctx.lineTo(points[1].x, points[1].y);
+        ctx.bezierCurveTo(points[2].x, points[2].y, points[3].x, points[3].y,points[4].x, points[4].y);
+        //Draw the connecting piece
+        ctx.lineTo(points[5].x, points[5].y);
+        ctx.bezierCurveTo(points[6].x, points[6].y, points[7].x, points[7].y,points[8].x, points[8].y);
+        ctx.bezierCurveTo(points[9].x, points[9].y, points[10].x, points[10].y,points[11].x, points[11].y);
+        // for (let i = 1; i < points.length; i++) {
+        //   ctx.lineTo(points[i].x, points[i].y);
+        // }
+        ctx.closePath();
+
+        // ctx.fill();
+        // ctx.stroke();
+
+        drawConnectingPiece(ctx,40,140,'R',0.2);
+
+        drawConnectingPiece(ctx,40,160,'L',0.2);
+
+        drawConnectingPiece(ctx,40,180,'D',0.2);
+
+        drawConnectingPiece(ctx,140,180,'U',0.2);
+
+        const startX = 200;
+        const startY = 90;
+        const randomX = Math.floor(Math.random() * (20 - 0 + 1));
+        
+        ctx.beginPath();
+        ctx.moveTo(startX, startY);
+        ctx.bezierCurveTo(startX, startY, startX+randomX,startY+10,startX+40, startY);
+        drawConnectingPiece(ctx,startX+40,startY,'U',0.2);
+        ctx.bezierCurveTo(startX+50, startY, startX+50+randomX,startY+10,startX+90, startY);
+        ctx.stroke();
+        
+
+        // ctx.beginPath();
+        // ctx.moveTo(0, 200);
+        // ctx.lineTo(25,200);
+        // // Start angle (in radians)
+        // const startAngle = Math.PI;
+        // // End angle (in radians)
+        // const endAngle = 0; // 180 degrees in radians
+        // ctx.arc(50,200,25,startAngle,endAngle);
+        // ctx.lineTo(75,220);
+        // ctx.arc(50,220,25,endAngle,startAngle);
+        // ctx.lineTo(0,220);
+
+        // //ctx.fill();
+        // ctx.stroke();
+      }
+  
+      // Call the draw function
+      drawJigsawPiece();
+    </script>
+</body>
+</html>
